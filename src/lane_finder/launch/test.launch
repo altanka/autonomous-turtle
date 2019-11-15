@@ -1,0 +1,8 @@
+<launch>
+    <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_autorace.launch">
+        <arg name="x_pos" value="0.245"/>
+        <arg name="y_pos" value="-1.760"/>
+        <arg name="z_pos" value="0"/>  
+        <arg name="gui" value="false"/>  
+    </include>
+</launch>

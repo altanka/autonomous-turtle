@@ -1,0 +1,4 @@
+<launch>
+
+    <node pkg="lane_finder" type="lane_finder_node" name="lane_finder_node" output="screen"/>
+</launch>

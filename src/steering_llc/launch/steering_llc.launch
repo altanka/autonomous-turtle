@@ -1,5 +1,5 @@
 <launch>
-    <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_autorace.launch"/>
+    <!--include file="$(find turtlebot3_gazebo)/launch/turtlebot3_autorace.launch"/-->
     <node pkg="steering_llc" type="steering_llc_node" name="steering_llc_node" output="screen">
         <param name="K_P" value="10"/>
         <param name="K_I" value="0.01"/>

@@ -4,7 +4,7 @@
   <arg name="x_pos" default="0.245"/>
   <arg name="y_pos" default="-1.760"/>
   <arg name="z_pos" default="0"/>
-  <arg name="gui" default="true"/>
+  <arg name="gui" default="false"/>
 
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

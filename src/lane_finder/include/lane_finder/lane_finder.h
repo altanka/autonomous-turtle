@@ -8,6 +8,7 @@
 #include "boost/shared_ptr.hpp"
 #include "opencv2/imgcodecs.hpp"
 
+
 class LaneFinder
 {
   private:

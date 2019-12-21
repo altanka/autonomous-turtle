@@ -14,9 +14,10 @@ SteeringLLC::~SteeringLLC()
 {
 }
 
-geometry_msgs::Twist SteeringLLC::steeringControl(float setpoint, float current_steering, geometry_msgs::Twist twist)
+geometry_msgs::Twist SteeringLLC::steeringControl(float set_point, float current_steering, geometry_msgs::Twist twist)
 {
-    e_curr_ = setpoint - current_steering;
+    
+    e_curr_ = set_point - current_steering;
 
     // ----------------------- P -----------------------
     u_p_ = K_P_ * e_curr_;

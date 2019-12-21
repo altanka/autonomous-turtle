@@ -1,4 +1,5 @@
 <launch>
 
     <node pkg="lane_finder" type="lane_finder_node" name="lane_finder_node" output="screen"/>
+    <node pkg="stanley_controller" type="stanley_controller_node" name="stanley_controller_node" output="screen"/>
 </launch>

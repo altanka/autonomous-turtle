@@ -7,6 +7,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "boost/shared_ptr.hpp"
 #include "opencv2/imgcodecs.hpp"
+#include "autonomous_msgs/LaneInfo.h"
+
 
 
 class LaneFinder
@@ -16,5 +18,5 @@ class LaneFinder
   public:
     LaneFinder(/* args */);
     ~LaneFinder();
-    float findLanes(cv_bridge::CvImagePtr cv_ptr);
+    autonomous_msgs::LaneInfo findLanes(cv_bridge::CvImagePtr cv_ptr, autonomous_msgs::LaneInfo lanes);
 };

@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     ros::init(argc, argv, "steering_llc_node");
     ros::NodeHandle nh("~");
     ros::Subscriber imu_sub = nh.subscribe("/imu", 1, imuCallback);
-    ros::Subscriber set_point_sub = nh.subscribe("/set_point", 1, setPointCallback);
+    ros::Subscriber set_point_sub = nh.subscribe("/set_point_", 1, setPointCallback);
     ros::Publisher twist_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
     geometry_msgs::Twist twist_msg;
     float K_P;

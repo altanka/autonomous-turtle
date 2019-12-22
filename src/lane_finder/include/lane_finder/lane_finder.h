@@ -18,5 +18,5 @@ class LaneFinder
   public:
     LaneFinder(/* args */);
     ~LaneFinder();
-    autonomous_msgs::LaneInfo findLanes(cv_bridge::CvImagePtr cv_ptr, autonomous_msgs::LaneInfo lanes);
+    autonomous_msgs::LaneInfo findLanes(cv_bridge::CvImagePtr cv_ptr, autonomous_msgs::LaneInfo lanes, float k1, float k2);
 };

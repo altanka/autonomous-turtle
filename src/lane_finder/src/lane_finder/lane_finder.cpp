@@ -12,13 +12,13 @@ LaneFinder::~LaneFinder()
 {
 }
 
-autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, autonomous_msgs::LaneInfo lanes)
+autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, autonomous_msgs::LaneInfo lanes, float k1, float k2)
 {
     cv::Point2f srcRect[4];
-    srcRect[0] = cv::Point2f((cv_ptr->image.cols) * 0.30f, (cv_ptr->image.rows) / 2);
-    srcRect[1] = cv::Point2f((cv_ptr->image.cols) * 0.65f, (cv_ptr->image.rows) / 2);
-    srcRect[2] = cv::Point2f(0.f, cv_ptr->image.rows - 20);
-    srcRect[3] = cv::Point2f((cv_ptr->image.cols), cv_ptr->image.rows - 20);
+    srcRect[0] = cv::Point2f((cv_ptr->image.cols) * k1, (cv_ptr->image.rows) * 0.5f);
+    srcRect[1] = cv::Point2f((cv_ptr->image.cols) * k2, (cv_ptr->image.rows) * 0.5f);
+    srcRect[2] = cv::Point2f(0.f, cv_ptr->image.rows - 40);
+    srcRect[3] = cv::Point2f((cv_ptr->image.cols), cv_ptr->image.rows - 40);
     cv::line(cv_ptr->image, srcRect[0], srcRect[1], cv::Scalar(255, 0, 0));
     cv::line(cv_ptr->image, srcRect[1], srcRect[3], cv::Scalar(255, 0, 0));
     cv::line(cv_ptr->image, srcRect[3], srcRect[2], cv::Scalar(0, 0, 255));
@@ -130,10 +130,55 @@ autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, au
             right_count = 0;
         }
     }
-    std::reverse(left_rects_x.begin(), left_rects_x.end());
-    std::reverse(right_rects_x.begin(), right_rects_x.end());
-    std::vector<double> left_coeff = polyfit_boost(left_rects_y, left_rects_x, 3);
-    std::vector<double> right_coeff = polyfit_boost(right_rects_y, right_rects_x, 3);
+
+    std::vector<double> left_coeff;
+    std::vector<double> right_coeff;
+
+    if (left_rects_x.size() > 0 && left_rects_x.size() > 0 && right_rects_x.size() > 0 && right_rects_y.size() > 0)
+    {
+        std::reverse(left_rects_x.begin(), left_rects_x.end());
+        std::reverse(right_rects_x.begin(), right_rects_x.end());
+        left_coeff = polyfit_Eigen(left_rects_y, left_rects_x, 3);
+        right_coeff = polyfit_Eigen(right_rects_y, right_rects_x, 3);
+    }
+    else
+    {
+        std::cout << "Left rects x size : " << left_rects_x.size() << std::endl;
+        std::cout << "Left rects y size : " << left_rects_x.size() << std::endl;
+        std::cout << "Right rects x size: " << left_rects_x.size() << std::endl;
+        std::cout << "Right rects y size: " << left_rects_x.size() << std::endl;
+        left_coeff.push_back(0);
+        left_coeff.push_back(0);
+        left_coeff.push_back(0);
+        left_coeff.push_back(0);
+        right_coeff.push_back(0);
+        right_coeff.push_back(0);
+        right_coeff.push_back(0);
+        right_coeff.push_back(0);
+    }
+    // try
+    // {
+    //     std::reverse(left_rects_x.begin(), left_rects_x.end());
+    //     std::reverse(right_rects_x.begin(), right_rects_x.end());
+    //     left_coeff = polyfit_boost(left_rects_y, left_rects_x, 3);
+    //     right_coeff = polyfit_boost(right_rects_y, right_rects_x, 3);
+    // }
+    // catch (const std::exception& e)
+    // {
+    //     std::cerr << e.what() << '\n';
+    //     std::cout << "Left rects x size : " << left_rects_x.size() << std::endl;
+    //     std::cout << "Left rects y size : " << left_rects_x.size() << std::endl;
+    //     std::cout << "Right rects x size: " << left_rects_x.size() << std::endl;
+    //     std::cout << "Right rects y size: " << left_rects_x.size() << std::endl;
+    //     left_coeff.push_back(0);
+    //     left_coeff.push_back(0);
+    //     left_coeff.push_back(0);
+    //     left_coeff.push_back(0);
+    //     right_coeff.push_back(0);
+    //     right_coeff.push_back(0);
+    //     right_coeff.push_back(0);
+    //     right_coeff.push_back(0);
+    // }
 
     // for (int i = 0; i < left_rects.size(); i++)
     // {
@@ -152,8 +197,8 @@ autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, au
     // std::cout << "\nCoefficients weighted:\n";
     // for (auto it = right_coeff.begin(); it != right_coeff.end(); ++it)
     //     std::cout << *it << " ";
-    cv::imshow("Warped", colored);
     cv::imshow("Image", cv_ptr->image);
+    cv::imshow("Warped", colored);
 
     lanes.header.stamp = ros::Time::now();
 

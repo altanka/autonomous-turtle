@@ -4,20 +4,19 @@
 #include <std_msgs/Float32.h>
 
 ros::Publisher steering_pub;
-StanleyController stanley_controller(1, 10);
+StanleyController stanley_controller(1, 5);
 float vehicle_speed;
 
 void lanesCallback(const autonomous_msgs::LaneInfo::ConstPtr& msg)
 {
     std_msgs::Float32 steering_angle;
     steering_angle.data = stanley_controller.calculateSteeringAngle(msg, vehicle_speed);
-    std::cout << "\nStanley CTE: " << steering_angle.data;
     steering_pub.publish(steering_angle);
 }
 
 void odomCallback(const nav_msgs::Odometry::ConstPtr& msg)
 {
-    vehicle_speed = std::sqrt(msg->twist.twist.linear.x * msg->twist.twist.linear.x +
+    vehicle_speed = 100*std::sqrt(msg->twist.twist.linear.x * msg->twist.twist.linear.x +
                               msg->twist.twist.linear.y * msg->twist.twist.linear.y);
 }
 

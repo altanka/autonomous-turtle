@@ -54,7 +54,7 @@ geometry_msgs::Twist SteeringLLC::steeringControl(float set_point, float current
     std::cout << "U_D       : " << u_d_ << "\n";
     std::cout << "U_Control : " << u_control_ << "\n";
 
-    twist.linear.x = 0.0;
+    twist.linear.x = 0.07;
     twist.angular.z = u_control_;
     e_last_ = e_curr_;
 

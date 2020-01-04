@@ -17,8 +17,8 @@ autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, au
     cv::Point2f srcRect[4];
     srcRect[0] = cv::Point2f((cv_ptr->image.cols) * k1, (cv_ptr->image.rows) * 0.5f);
     srcRect[1] = cv::Point2f((cv_ptr->image.cols) * k2, (cv_ptr->image.rows) * 0.5f);
-    srcRect[2] = cv::Point2f(0.f, cv_ptr->image.rows - 40);
-    srcRect[3] = cv::Point2f((cv_ptr->image.cols), cv_ptr->image.rows - 40);
+    srcRect[2] = cv::Point2f(20.0f, cv_ptr->image.rows - 40);
+    srcRect[3] = cv::Point2f((cv_ptr->image.cols) - 20.0f, cv_ptr->image.rows - 40);
     cv::line(cv_ptr->image, srcRect[0], srcRect[1], cv::Scalar(255, 0, 0));
     cv::line(cv_ptr->image, srcRect[1], srcRect[3], cv::Scalar(255, 0, 0));
     cv::line(cv_ptr->image, srcRect[3], srcRect[2], cv::Scalar(0, 0, 255));

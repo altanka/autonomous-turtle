@@ -5,8 +5,8 @@
 
 LaneFinder lane_finder;
 autonomous_msgs::LaneInfo lanes;
-float k1 = 0.3f;
-float k2 = 0.7f;
+float k1 = 0.33f;
+float k2 = 1-k1;
 
 void cameraCallback(const sensor_msgs::ImageConstPtr& msg)
 {
@@ -27,7 +27,7 @@ void cameraCallback(const sensor_msgs::ImageConstPtr& msg)
 
 void paramCallback(const geometry_msgs::PointConstPtr& msg){
     k1 = msg -> x;
-    k2 = msg -> y;
+    k2 = 1 - msg -> x;
 }
 
 int main(int argc, char** argv)

@@ -24,12 +24,14 @@ double StanleyController::calculateSteeringAngle(const autonomous_msgs::LaneInfo
     c2_r_ = msg->right_lane.c2;
     c3_r_ = msg->right_lane.c3;
     double yaw_error = (c1_l_ + c1_r_) / 2;
-    yaw_error = 0;
+    // yaw_error = 0;
     double cross_track_error = atan2(K * (c0_l_ + c0_r_), vehicle_speed + K_soft)*(180/M_PI);
 
     std::cout << "\n----------------------------------------------------\n";
     std::cout << "\nStanley c0_l : " << c0_l_;
     std::cout << "\nStanley c0_r : " << c0_r_;
+    std::cout << "\nStanley c1_l : " << c1_l_;
+    std::cout << "\nStanley c1_r : " << c1_r_;
     std::cout << "\nStanley Cross Track Error : " << cross_track_error;
     std::cout << "\nStanley Yaw Error         : " << yaw_error;
     double steering_angle = cross_track_error + yaw_error;

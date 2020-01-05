@@ -13,13 +13,18 @@ StanleyController::~StanleyController()
 {
 }
 
+float map(float x, float in_min, float in_max, float out_min, float out_max)
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 double StanleyController::calculateSteeringAngle(const autonomous_msgs::LaneInfo::ConstPtr& msg, float vehicle_speed)
 {
-    c0_l_ = msg->left_lane.c0;
+    c0_l_ = map(msg->left_lane.c0, -160, 160, -3, 3);
     c1_l_ = msg->left_lane.c1;
     c2_l_ = msg->left_lane.c2;
     c3_l_ = msg->left_lane.c3;
-    c0_r_ = msg->right_lane.c0;
+    c0_r_ =  map(msg->right_lane.c0, -160, 160, -3, 3);
     c1_r_ = msg->right_lane.c1;
     c2_r_ = msg->right_lane.c2;
     c3_r_ = msg->right_lane.c3;

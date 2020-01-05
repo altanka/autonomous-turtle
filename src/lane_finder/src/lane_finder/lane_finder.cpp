@@ -36,19 +36,6 @@ autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, au
 
     cv::cvtColor(warp_dst, warp_dst, cv::COLOR_BGR2GRAY);
     cv::threshold(warp_dst, warp_dst, 125, 255, cv::THRESH_BINARY);
-    // cv::adaptiveThreshold(warp_dst, warp_dst, 125, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_BINARY_INV, 11, 12);
-    // std::vector<std::vector<cv::Point> > contours;
-    // std::vector<cv::Vec4i> hierarchy;
-    // cv::RNG rng(12345);
-    // cv::findContours(warp_dst, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
-
-    // /// Draw contours
-    // cv::Mat drawing = cv::Mat::zeros(warp_dst.size(), CV_8UC3);
-    // for (int i = 0; i < contours.size(); i++)
-    // {
-    //     cv::Scalar color = cv::Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
-    //     drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, cv::Point());
-    // }
 
     int rect_height = warp_dst.rows / 6;
     int rect_width = warp_dst.rows / 6;
@@ -85,10 +72,10 @@ autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, au
                 cv::rectangle(colored, right_rect_cv, cv::Scalar(0, 0, 255));
                 left_rects.push_back(left_rect_cv);
                 right_rects.push_back(right_rect_cv);
-                left_rects_x.push_back(left_rect_cv.x - warp_dst.rows / 2);
-                left_rects_y.push_back(left_rect_cv.y);
-                right_rects_x.push_back(right_rect_cv.x - warp_dst.rows / 2);
-                right_rects_y.push_back(right_rect_cv.y);
+                left_rects_x.push_back(left_x / left_x_count - warp_dst.cols / 2);
+                left_rects_y.push_back(i - rect_height + 1);
+                right_rects_x.push_back(right_x / right_x_count - warp_dst.cols / 2);
+                right_rects_y.push_back(i - rect_height + 1);
             }
             left_x = 0;
             left_x_count = 0;
@@ -137,9 +124,11 @@ autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, au
     if (left_rects_x.size() > 0 && left_rects_x.size() > 0 && right_rects_x.size() > 0 && right_rects_y.size() > 0)
     {
         std::reverse(left_rects_x.begin(), left_rects_x.end());
+        std::reverse(left_rects_y.begin(), left_rects_y.end());
         std::reverse(right_rects_x.begin(), right_rects_x.end());
-        left_coeff = polyfit_Eigen(left_rects_y, left_rects_x, 3);
-        right_coeff = polyfit_Eigen(right_rects_y, right_rects_x, 3);
+        std::reverse(right_rects_y.begin(), right_rects_y.end());
+        left_coeff = polyfit_boost(left_rects_y, left_rects_x, 3);
+        right_coeff = polyfit_boost(right_rects_y, right_rects_x, 3);
     }
     else
     {

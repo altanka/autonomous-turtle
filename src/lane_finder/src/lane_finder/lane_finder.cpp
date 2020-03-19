@@ -12,13 +12,14 @@ LaneFinder::~LaneFinder()
 {
 }
 
-autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, autonomous_msgs::LaneInfo lanes, float k1, float k2)
+autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, autonomous_msgs::LaneInfo lanes, float k1,
+                                                float k2)
 {
     cv::Point2f srcRect[4];
-    srcRect[0] = cv::Point2f((cv_ptr->image.cols) * k1, (cv_ptr->image.rows) * 0.5f);
-    srcRect[1] = cv::Point2f((cv_ptr->image.cols) * k2, (cv_ptr->image.rows) * 0.5f);
-    srcRect[2] = cv::Point2f(20.0f, cv_ptr->image.rows - 40);
-    srcRect[3] = cv::Point2f((cv_ptr->image.cols) - 20.0f, cv_ptr->image.rows - 40);
+    srcRect[0] = cv::Point2f((cv_ptr->image.cols) * k1 - 20, (cv_ptr->image.rows) * 0.55f);
+    srcRect[1] = cv::Point2f((cv_ptr->image.cols) * k2 + 20, (cv_ptr->image.rows) * 0.55f);
+    srcRect[2] = cv::Point2f(0, cv_ptr->image.rows - 40);
+    srcRect[3] = cv::Point2f((cv_ptr->image.cols), cv_ptr->image.rows - 40);
     cv::line(cv_ptr->image, srcRect[0], srcRect[1], cv::Scalar(255, 0, 0));
     cv::line(cv_ptr->image, srcRect[1], srcRect[3], cv::Scalar(255, 0, 0));
     cv::line(cv_ptr->image, srcRect[3], srcRect[2], cv::Scalar(0, 0, 255));
@@ -54,6 +55,10 @@ autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, au
     std::vector<double> left_rects_y;
     std::vector<double> right_rects_x;
     std::vector<double> right_rects_y;
+    std::vector<double> left_lane_x;
+    std::vector<double> left_lane_y;
+    std::vector<double> right_lane_x;
+    std::vector<double> right_lane_y;
 
     cv::Mat colored = cv::Mat::zeros((cv_ptr->image.rows), (cv_ptr->image.cols), cv_ptr->image.type());
     cv::cvtColor(warp_dst, colored, cv::COLOR_GRAY2BGR);
@@ -94,11 +99,21 @@ autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, au
                 {
                     left_rect += j;
                     left_count++;
+                    left_lane_x.push_back(j - warp_dst.cols / 2);
+                    left_lane_y.push_back(i);
+                    colored.at<cv::Vec3b>(i, j)[0] = 255;
+                    colored.at<cv::Vec3b>(i, j)[1] = 0;
+                    colored.at<cv::Vec3b>(i, j)[2] = 0;
                 }
                 if (j >= warp_dst.cols / 2)
                 {
                     right_rect += j;
                     right_count++;
+                    right_lane_x.push_back(j - warp_dst.cols / 2);
+                    right_lane_y.push_back(i);
+                    colored.at<cv::Vec3b>(i, j)[0] = 0;
+                    colored.at<cv::Vec3b>(i, j)[1] = 255;
+                    colored.at<cv::Vec3b>(i, j)[2] = 0;
                 }
             }
         }
@@ -121,14 +136,14 @@ autonomous_msgs::LaneInfo LaneFinder::findLanes(cv_bridge::CvImagePtr cv_ptr, au
     std::vector<double> left_coeff;
     std::vector<double> right_coeff;
 
-    if (left_rects_x.size() > 0 && left_rects_x.size() > 0 && right_rects_x.size() > 0 && right_rects_y.size() > 0)
+    if (left_lane_x.size() > 0 && left_lane_y.size() > 0 && right_lane_x.size() > 0 && right_lane_y.size() > 0)
     {
-        std::reverse(left_rects_x.begin(), left_rects_x.end());
-        std::reverse(left_rects_y.begin(), left_rects_y.end());
-        std::reverse(right_rects_x.begin(), right_rects_x.end());
-        std::reverse(right_rects_y.begin(), right_rects_y.end());
-        left_coeff = polyfit_boost(left_rects_y, left_rects_x, 3);
-        right_coeff = polyfit_boost(right_rects_y, right_rects_x, 3);
+        std::reverse(left_lane_x.begin(), left_lane_x.end());
+        std::reverse(left_lane_y.begin(), left_lane_y.end());
+        std::reverse(right_lane_x.begin(), right_lane_x.end());
+        std::reverse(right_lane_y.begin(), right_lane_y.end());
+        left_coeff = polyfit_boost(left_lane_y, left_lane_x, 3);
+        right_coeff = polyfit_boost(right_lane_y, right_lane_x, 3);
     }
     else
     {

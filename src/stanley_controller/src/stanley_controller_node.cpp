@@ -4,7 +4,7 @@
 #include <std_msgs/Float32.h>
 
 ros::Publisher steering_pub;
-StanleyController stanley_controller(1, 5);
+StanleyController stanley_controller(1, 1);
 float vehicle_speed;
 
 void lanesCallback(const autonomous_msgs::LaneInfo::ConstPtr& msg)

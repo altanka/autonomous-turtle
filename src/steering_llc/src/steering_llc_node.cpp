@@ -11,7 +11,6 @@ void imuCallback(const sensor_msgs::Imu::ConstPtr& msg)
 {
     current_steering = msg->orientation.z;
     initialized = true;
-    std::cout << "Steering  : " << current_steering << "\n";
 }
 
 void setPointCallback(const std_msgs::Float32::ConstPtr& msg)

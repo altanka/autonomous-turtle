@@ -22,7 +22,7 @@ float map(float x, float in_min, float in_max, float out_min, float out_max)
 geometry_msgs::Twist SteeringLLC::steeringControl(float set_point, float current_steering, geometry_msgs::Twist twist)
 {
     set_point = map(set_point, -180, 180, 1, -1);
-    e_curr_ = set_point - current_steering;
+    e_curr_ = set_point - current_steering; 
 
     // ----------------------- P -----------------------
     u_p_ = K_P_ * e_curr_;
@@ -53,8 +53,10 @@ geometry_msgs::Twist SteeringLLC::steeringControl(float set_point, float current
     std::cout << "U_I       : " << u_i_ << "\n";
     std::cout << "U_D       : " << u_d_ << "\n";
     std::cout << "U_Control : " << u_control_ << "\n";
+    std::cout << "Steering  : " << map(current_steering, -1, 1, 180, -180) << "\n";
 
-    twist.linear.x = 0.07;
+
+    twist.linear.x = 0.0;
     twist.angular.z = u_control_;
     e_last_ = e_curr_;
 

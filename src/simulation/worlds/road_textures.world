@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+  <world name="default">
+    <scene>
+      <grid>false</grid>
+    </scene>
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    
+    <road name="Lanes_6">
+      <width>2</width>
+      <point>65 0 0.005</point>
+      <point>-65 0 0.005</point>
+      <material>
+        <script>
+          <uri>file://media/materials/scripts/gazebo.material</uri>
+          <name>Gazebo/Lanes_6</name>
+        </script>
+      </material>
+    </road>
+
+  </world>
+</sdf>

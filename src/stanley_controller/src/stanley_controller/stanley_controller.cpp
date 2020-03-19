@@ -21,14 +21,16 @@ float map(float x, float in_min, float in_max, float out_min, float out_max)
 double StanleyController::calculateSteeringAngle(const autonomous_msgs::LaneInfo::ConstPtr& msg, float vehicle_speed)
 {
     c0_l_ = map(msg->left_lane.c0, -160, 160, -3, 3);
+    // c0_l_ = msg->left_lane.c0;
     c1_l_ = msg->left_lane.c1;
     c2_l_ = msg->left_lane.c2;
     c3_l_ = msg->left_lane.c3;
     c0_r_ =  map(msg->right_lane.c0, -160, 160, -3, 3);
+    // c0_r_ = msg->right_lane.c0;
     c1_r_ = msg->right_lane.c1;
     c2_r_ = msg->right_lane.c2;
     c3_r_ = msg->right_lane.c3;
-    double yaw_error = (c1_l_ + c1_r_) / 2;
+    double yaw_error = 20*(c1_l_ + c1_r_) / 2;
     // yaw_error = 0;
     double cross_track_error = atan2(K * (c0_l_ + c0_r_), vehicle_speed + K_soft)*(180/M_PI);
 
@@ -41,7 +43,7 @@ double StanleyController::calculateSteeringAngle(const autonomous_msgs::LaneInfo
     std::cout << "\nStanley Yaw Error         : " << yaw_error;
     double steering_angle = cross_track_error + yaw_error;
     std::cout << "\nStanley Error             : " << steering_angle << "\n";
-    steering_angle = steering_angle > 15 ? 15 : steering_angle;
-    steering_angle = steering_angle < -15 ? -15 : steering_angle;
+    steering_angle = steering_angle > 50 ? 50 : steering_angle;
+    steering_angle = steering_angle < -50 ? -50 : steering_angle;
     return steering_angle;
 }
